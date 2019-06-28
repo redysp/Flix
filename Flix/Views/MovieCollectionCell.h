@@ -1,5 +1,5 @@
 //
-//  MoviesGridViewController.h
+//  MovieCollectionCell.h
 //  Flix
 //
 //  Created by powercarlos25 on 6/27/19.
@@ -10,7 +10,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface MoviesGridViewController : UIViewController
+@interface MovieCollectionCell : UICollectionViewCell
+@property (weak, nonatomic) IBOutlet UIImageView *posterView;
 
 @end
 

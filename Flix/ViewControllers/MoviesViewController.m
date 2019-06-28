@@ -21,8 +21,7 @@
 
 @property (nonatomic, strong) NSArray *movies;
 @property (nonatomic, strong) UIRefreshControl *refreshControl;
-
-
+@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *activityIndicator;
 
 @end
 
@@ -41,6 +40,13 @@
     [self.refreshControl addTarget:self action:@selector(fetchMovies) forControlEvents:UIControlEventValueChanged];
     [self.tableView insertSubview:self.refreshControl atIndex:0];
     
+    // Start the activity indicator
+    [self.activityIndicator startAnimating];
+    
+    // Stop the activity indicator
+    // Hides automatically if "Hides When Stopped" is enabled
+    [self.activityIndicator stopAnimating];
+    
 }
 
 - (void)fetchMovies{
@@ -49,6 +55,22 @@
     NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration] delegate:nil delegateQueue:[NSOperationQueue mainQueue]];
     NSURLSessionDataTask *task = [session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         if (error != nil) {
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Cannot get movies" message:@"You seem to be offline" preferredStyle:(UIAlertControllerStyleAlert)];
+            
+            // create an OK action
+            UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"Try Again" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            // handle response here.
+            }];
+            
+            // add the OK action to the alert controller
+            [alert addAction:okAction];
+            
+            [self presentViewController:alert animated:YES completion:^{
+                // optional code for what happens after the alert controller has finished presenting
+            }];
+            
+            
+            
             NSLog(@"%@", [error localizedDescription]);
         }
         else {
@@ -107,6 +129,8 @@
     
     NSLog(@"Tapping on a movie!");
 }
+
+
 
 
 @end
