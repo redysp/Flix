@@ -21,7 +21,10 @@
 
 @property (nonatomic, strong) NSArray *movies;
 @property (nonatomic, strong) UIRefreshControl *refreshControl;
+@property (strong, nonatomic) NSArray *data;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *activityIndicator;
+@property (strong, nonatomic) NSArray *filteredData;
+@property (weak, nonatomic) IBOutlet UISearchBar *searchBar;
 
 @end
 
@@ -33,15 +36,18 @@
     
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
+    self.searchBar.delegate = self;
+    
+    //self.filteredData = self.tableView.delegate;
+    
+    // Start the activity indicator
+    [self.activityIndicator startAnimating];
     
     [self fetchMovies];
     
     self.refreshControl = [[UIRefreshControl alloc] init];
     [self.refreshControl addTarget:self action:@selector(fetchMovies) forControlEvents:UIControlEventValueChanged];
     [self.tableView insertSubview:self.refreshControl atIndex:0];
-    
-    // Start the activity indicator
-    [self.activityIndicator startAnimating];
     
     // Stop the activity indicator
     // Hides automatically if "Hides When Stopped" is enabled
@@ -76,12 +82,22 @@
         else {
             NSDictionary *dataDictionary = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
             
-            NSLog(@"%@", dataDictionary);
+            //NSLog(@"%@", dataDictionary);
             
             self.movies = dataDictionary[@"results"];
-            for (NSDictionary *movie in self.movies){
-                NSLog(@"%@", movie[@"title"]);
-            }
+//            for (NSDictionary *movie in self.movies){
+//                NSLog(@"%@", movie[@"title"]);
+//            }
+//
+            // ** Search Bar Data **
+            
+            // Create dictionary variable, and then get the movie title string
+            
+            
+            self.data = self.movies;
+            
+            
+            self.filteredData = self.movies;
             
             [self.tableView reloadData];
             // TODO: Get the array of movies
@@ -94,13 +110,14 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return self.movies.count;
+    //return self.movies.count;
+    return self.filteredData.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     MovieCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MovieCell"];
     
-    NSDictionary *movie = self.movies[indexPath.row];
+    NSDictionary *movie = self.filteredData[indexPath.row];
     cell.titleLabel.text = movie[@"title"];
     cell.synopsisLabel.text = movie[@"overview"];
     
@@ -130,6 +147,27 @@
     NSLog(@"Tapping on a movie!");
 }
 
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
+    
+    if (searchText.length != 0) {
+        
+        NSPredicate *predicate = [NSPredicate predicateWithBlock:^BOOL(NSDictionary *evaluatedObject, NSDictionary *bindings) {
+            
+            return [evaluatedObject[@"title"] containsString:searchText];
+        }];
+                                  
+        self.filteredData = [self.data filteredArrayUsingPredicate:predicate];
+        
+        //NSLog(@"%@", self.filteredData);
+        
+    }
+    else {
+        self.filteredData = self.data;
+    }
+    
+    [self.tableView reloadData];
+    
+}
 
 
 
