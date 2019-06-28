@@ -147,7 +147,6 @@
                                   
         self.filteredData = [self.data filteredArrayUsingPredicate:predicate];
         
-        //NSLog(@"%@", self.filteredData);
         
     }
     else {
