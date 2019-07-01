@@ -53,6 +53,9 @@
     // Hides automatically if "Hides When Stopped" is enabled
     [self.activityIndicator stopAnimating];
     
+    self.tableView.rowHeight = UITableViewAutomaticDimension;
+    
+    
 }
 
 - (void)fetchMovies{
