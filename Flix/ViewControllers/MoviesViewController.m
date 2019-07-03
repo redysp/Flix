@@ -19,12 +19,19 @@
 // Property: Used for encapsulation (get and setters for classes)
 // Creates a private _movies variable and its setter/getter
 
+// Contains array for movies
 @property (nonatomic, strong) NSArray *movies;
+
+// Used to refresh movies
 @property (nonatomic, strong) UIRefreshControl *refreshControl;
+
+// Search bar functionalities
 @property (strong, nonatomic) NSArray *data;
-@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *activityIndicator;
 @property (strong, nonatomic) NSArray *filteredData;
 @property (weak, nonatomic) IBOutlet UISearchBar *searchBar;
+
+// Load indicator
+@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *activityIndicator;
 
 @end
 
